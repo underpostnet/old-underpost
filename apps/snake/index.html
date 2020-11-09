@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+
+<html dir='ltr'>
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-142681040-1"></script>
+
+	<script>
+
+	  window.dataLayer = window.dataLayer || [];
+
+	  function gtag(){dataLayer.push(arguments);}
+
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-142681040-1');
+
+	  gtag('set', {'user_id': 'USER_ID'}); // Establezca el ID de usuario mediante el user_id con el que haya iniciado sesión.
+
+	</script>
+
+
+
+  <meta name='description' content='Snake Game - Vanilla JS - UNDERpost.net'>
+
+  <link rel='canonical' href='https://underpost.net/snake/index.php'>
+
+  <meta property='og:title' content='Snake Game - Vanilla JS - UNDERpost.net'>
+
+  <meta property='og:description' content='Snake Game - Vanilla JS - UNDERpost.net'>
+
+  <meta property='og:image' content='https://underpost.net/img/underpost-social.png'>
+
+  <meta property='og:url' content='https://underpost.net/snake'>
+
+  <meta name='twitter:card' content='summary_large_image'>
+
+  <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
+
+  <meta name='viewport' content='width=device-width, user-scalable=no' />
+
+  <link rel='icon' type='image/png' href='../assets/underpost.png' />
+
+  <title>UNDERpost.net</title>
+
+  <style>
+
+  *{font-family: Arial; text-decoration: none; font-size: 14px;}
+
+  html,body, #st-full-pg {
+
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: black;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    cursor : url('../assets/dinamic.cur') 0 0, auto;
+
+  }
+
+  .center {
+
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+
+  }
+
+  .topcenter {
+
+    position: absolute;
+    transform: translate(-50%, 0);
+    left: 50%;
+
+  }
+
+  .lineal {
+
+    position: absolute;
+    background: #1d1d1d;
+    border-radius: 10px;
+
+  }
+
+  .lineal:hover {
+
+    background: #282828;
+
+  }
+
+  .up {
+
+    top: 5%;
+    left: 35%;
+    width: 30%;
+    height: 30%;
+
+  }
+
+  .down {
+
+    top: 65%;
+    left: 35%;
+    width: 30%;
+    height: 30%;
+
+  }
+
+  .left {
+
+    top: 35%;
+    left: 5%;
+    width: 30%;
+    height: 30%;
+
+  }
+
+  .right {
+
+    top: 35%;
+    left: 65%;
+    width: 30%;
+    height: 30%;
+
+  }
+
+  .underpost:hover {
+
+      color:red;
+
+  }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div style='display: none;'><h1>Snake Game - Vanilla JS</h1></div>
+
+  <div class='map' style='
+
+  position: absolute;
+  background: #373737;
+  transform: translate(-50%, 0);
+  left: 50%;
+  width: 100%;
+  height: 80%;
+
+  '>
+
+  <div class='topcenter underpost' style='z-index: 999; text-shadow: 0 0 3px black,0 0 3px black;'><br>Powered By <strong>UNDER</strong>post.net</div>
+
+  <div class='square center' style='background: #1b1b1b;'>
+
+  </div>
+
+</div>
+
+<div class='control' style='
+
+position: absolute;
+background: #4f4e4e;
+transform: translate(-50%, 0);
+left: 50%;
+width: 100%;
+height: 20%;
+top: 80%;
+
+'>
+
+  <div class='squareControl center' style='background: #4f4e4e;'>
+
+
+      <div class='up lineal'><div class='center' style='font-size: 30px;'>&#8679;</div></div>
+
+      <div class='down lineal'><div class='center' style='font-size: 30px;'>&#8681;</div></div>
+
+      <div class='left lineal'><div class='center' style='font-size: 30px;'>&#8678;</div></div>
+
+      <div class='right lineal'><div class='center' style='font-size: 30px;'>&#8680;</div></div>
+
+  </div>
+
+</div>
+
+<script type='text/javascript'>
+
+(function(){
+
+  //VANILLA FUNCTIONS
+
+  function random(min, max){
+
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+
+  }
+
+  function s(div){
+
+    return document.querySelector(div);
+
+  }
+
+  function i(div){
+
+    return document.getElementById(div);
+
+  }
+
+  function w(div){
+
+    var w = document.body.clientWidth;
+
+    var wp = parseFloat((document.querySelector(div).style.width).replace('%', ''))/100;
+
+    var r = w*wp;
+
+    return r;
+
+  }
+
+  function h(div){
+
+    var h = document.body.clientHeight;
+
+    var hp = parseFloat((document.querySelector(div).style.height).replace('%', ''))/100;
+
+    var r = h*hp;
+
+    return r;
+
+  }
+
+  function append(div, html){
+
+    s(div).insertAdjacentHTML('beforeend', html);
+
+  }
+
+  function prepend(div, html){
+
+    s(div).insertAdjacentHTML('afterbegin', html);
+
+  }
+
+  function html(div, html){
+
+    s(div).innerHTML = html;
+
+  }
+
+  function sremove(div){
+
+    s(div).parentNode.removeChild(s(div));
+
+  }
+
+  function iremove(div){
+
+    i(div).parentNode.removeChild(i(div));
+
+  }
+
+  //RESPONSIVE FUNCTION
+
+  function responsive(){
+
+    if(w('.map')<=h('.map')){
+
+      document.querySelector('.square').style.width = w('.map')+'px' ;
+
+      document.querySelector('.square').style.height = w('.map')+'px' ;
+
+    }else{
+
+      document.querySelector('.square').style.width = h('.map')+'px' ;
+
+      document.querySelector('.square').style.height = h('.map')+'px' ;
+
+    }
+
+    if(w('.control')<=h('.control')){
+
+      document.querySelector('.squareControl').style.width = w('.control')+'px' ;
+
+      document.querySelector('.squareControl').style.height = w('.control')+'px' ;
+
+    }else{
+
+      document.querySelector('.squareControl').style.width = h('.control')+'px' ;
+
+      document.querySelector('.squareControl').style.height = h('.control')+'px' ;
+
+    }
+
+  }
+
+  //GAME FUNCTIONS
+
+  function valid(xf, yf){
+
+    if(xf>d){
+
+      return false;
+
+    }else if(xf<1){
+
+      return false;
+
+    }else if(yf>d){
+
+      return false;
+
+    }else if(yf<1){
+
+      return false;
+
+    }else {
+
+      return true;
+
+    }
+
+  }
+
+  function loadNode(){
+
+    var long = 100/d;
+
+    for(var yi=0;yi<d;yi++){
+
+      for(var xi=0;xi<d;xi++){
+
+        var style = 'position: absolute; background: none;  left: '+(xi*long)+'%; top: '+(yi*long)+'%; width: '+long+'%; height: '+long+'%; ';
+
+        var str = '<div id="'+(xi+1)+'-'+(yi+1)+'" style="'+style+'"></div>';
+
+        append('.square', str);
+
+      }
+
+    }
+
+    i((x[head]+'-'+y[head])).style.background = 'red';
+
+  }
+
+  function loadEat(){
+
+    var disp = new Array();
+
+    var di = 0;
+
+    disp[di] = -1;
+
+    for(var indy=1;indy<=d;indy++){
+
+      for(var indx=1;indx<=d;indx++){
+
+        var name = indx+'-'+indy;
+
+        //console.log(i(name).style.background);
+
+        if(i(name).style.background == 'none' || i(name).style.background == 'rgba(0, 0, 0, 0) none repeat scroll 0% 0%'){
+
+          disp[di]=name;
+          di++;
+
+        }
+
+      }
+
+    }
+
+    if(disp[0]!=-1){
+
+      var pos = random(0, di);
+
+      i(disp[pos]).style.background = 'yellow';
+
+    }else{
+
+      dirx=0;
+      diry=0;
+
+      console.log(disp[0]);
+
+      alert('You Win');
+
+    }
+
+  }
+
+  function move(){
+
+    if( (dirx != 0) || (diry != 0) ){
+
+      if(valid( (x[head]+dirx),(y[head]+diry) )){
+
+        var befx = x[head]+dirx;
+        var befy = y[head]+diry;
+
+        var fail = false;
+
+        for(var hi=0;hi<=head;hi++){
+
+          if(x[hi]==befx && y[hi]==befy){
+
+            fail = true;
+
+            dirx = 0;
+
+            diry = 0;
+
+            alert('Game Over');
+
+            location.reload();
+
+          }
+
+        }
+
+        if(!fail){
+
+          if(i(befx+'-'+befy).style.background == 'yellow' || i(befx+'-'+befy).style.background == 'yellow none repeat scroll 0% 0%'){
+
+            head++;
+            loadEat();
+
+          }else{
+
+            for(var hi=0;hi<=head;hi++){
+
+              if(hi==0){
+
+                i(x[hi]+'-'+y[hi]).style.background = 'none';
+
+              }else{
+
+                x[hi-1]=x[hi];
+                y[hi-1]=y[hi];
+
+              }
+
+            }
+
+          }
+
+          x[head]=befx;
+          y[head]=befy;
+          i(befx+'-'+befy).style.background = 'red';
+
+        }
+
+      }else{
+
+        dirx = 0;
+        diry = 0;
+
+        alert('Game Over');
+
+        location.reload();
+
+      }
+
+    }
+
+  }
+
+  function up(){
+
+    //alert('up');
+
+    if( (diry!=1 && dirx!=0) || head==0 ){
+
+      diry = -1;
+      dirx = 0;
+      move();
+
+    }
+
+  }
+
+  function down(){
+
+    //alert('down');
+
+    if( (diry!=-1 && dirx!=0) || head==0 ){
+
+      diry = 1;
+      dirx = 0;
+      move();
+
+    }
+
+
+  }
+
+  function left(){
+
+    //alert('left');
+
+    if( (diry!=0 && dirx!=1) || head==0 ){
+
+      dirx = -1;
+      diry = 0;
+      move();
+
+    }
+
+  }
+
+  function right(){
+
+    //alert('right');
+
+    if( (diry!=0 && dirx!=-1) || head==0 ){
+
+      dirx = 1;
+      diry = 0;
+      move();
+
+    }
+
+  }
+
+  //INIT FUNCTION
+
+  function init(){
+
+    responsive();
+
+    loadNode();
+
+    loadEat();
+
+  }
+
+  //LOOP FUNCTION
+
+  function loop(){
+
+    setInterval(function(e){
+
+      responsive();
+
+      move();
+
+    }, 150);
+
+  }
+
+  //INITIAL VARIABLE
+
+  var d = 20;
+
+  var x = new Array();
+
+  var y = new Array();
+
+  var head = 0;
+
+  x[head] = random(1, d);
+
+  y[head] = random(1, d);
+
+  var dirx = 0;
+
+  var diry = 0;
+
+  //START GAME
+
+  init();
+
+  loop();
+
+  //EVENTS
+
+  document.onkeydown = function() {
+
+    var key = window.event.keyCode;
+
+    //console.log(key);
+
+    if(key==38){
+
+      up();
+
+    }
+
+    if(key==40){
+
+      down();
+
+    }
+
+    if(key==39){
+
+      right();
+
+    }
+
+    if(key==37){
+
+      left();
+
+    }
+
+  };
+
+  s('.up').addEventListener('click', function () {
+
+  	up();
+
+  });
+
+  s('.down').addEventListener('click', function () {
+
+  	down();
+
+  });
+
+  s('.right').addEventListener('click', function () {
+
+  	right();
+
+  });
+
+  s('.left').addEventListener('click', function () {
+
+  	left();
+
+  });
+
+  s('.underpost').addEventListener('click', function () {
+
+  	window.location.href = "https://underpost.net/";
+
+  });
+
+  //PROTECT
+
+  document.oncontextmenu = function(){ return false; }
+
+  document.ondragstart = function(){ return false; }
+
+  document.onselectstart = function(){ return false; }
+
+}());
+
+</script>
+
+</body>
+
+</html>
